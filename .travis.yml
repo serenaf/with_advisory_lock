@@ -16,6 +16,10 @@ env:
 
 before_install:
   - gem install bundler
+  - chmod +x mysql_reset_root_password.sh
+  - chmod +x travis_mysql_5.7.sh
+  - ./travis_mysql_5.7.sh
+  - ./mysql_reset_root_password.sh
 
 script: WITH_ADVISORY_LOCK_PREFIX=$TRAVIS_JOB_ID bundle exec rake --trace
 
