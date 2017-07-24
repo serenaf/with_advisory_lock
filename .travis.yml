@@ -27,7 +27,7 @@ script: WITH_ADVISORY_LOCK_PREFIX=$TRAVIS_JOB_ID bundle exec rake --trace
 before_script:
   - bash travis_mysql_5.7.sh
   - mysql -e 'create database with_advisory_lock_test' -u root
-  - psql -c 'create database with_advisory_lock_test' -U serena
+  - psql -c 'create database with_advisory_lock_test' -U postgres
 
 matrix:
   allow_failures:
