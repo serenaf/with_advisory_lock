@@ -1,35 +1,36 @@
 language: ruby
 
+dist: trusty
+sudo: required
+
 rvm:
   - 2.4.0
   - 2.3.3
   - 2.2.6
 
 gemfile:
+  - gemfiles/activerecord_5.1.gemfile
   - gemfiles/activerecord_5.0.gemfile
   - gemfiles/activerecord_4.2.gemfile
 
 env:
   - DB=postgresql
   - DB=mysql
+  - DB=mysql MYSQL_VERSION=5.7
   - DB=sqlite
 
 before_install:
   - gem install bundler
-  - chmod +x mysql_reset_root_password.sh
-  - chmod +x travis_mysql_5.7.sh
-  - ./travis_mysql_5.7.sh
-  - ./mysql_reset_root_password.sh
 
 script: WITH_ADVISORY_LOCK_PREFIX=$TRAVIS_JOB_ID bundle exec rake --trace
 
 before_script:
-  - mysql -e 'create database with_advisory_lock_test'
-  - psql -c 'create database with_advisory_lock_test' -U postgres
+  - bash travis_mysql_5.7.sh
+  - mysql -e 'create database with_advisory_lock_test' -u root
+  - psql -c 'create database with_advisory_lock_test' -U serena
 
 matrix:
   allow_failures:
     - gemfile: gemfiles/activerecord_edge.gemfile
     - rvm: jruby-19mode # travis' version of jruby has issues. Tests pass with jruby 1.7.13/java 1.8.0_11 on mac.
     - rvm: rbx-2
-
